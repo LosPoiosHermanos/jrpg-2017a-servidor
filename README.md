@@ -12,12 +12,10 @@
 
 ### Integrantes del equipo
 
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
-* Completar ([xxxx](https://github.com/xxxx))
+* Jorge Hernan Enciso Dure ([HernanEnciso](https://github.com/HernanEnciso))
+* Sabrina Tejada ([sntejada1](https://github.com/sntejada1))
+* Marcelo Gabriel Lorenz ([M-G-Lorenz](https://github.com/M-G-Lorenz))
+* Fernando Jardines ([fer-unlam](https://github.com/ferjardines))
 
 ## Sobre la tecnología
 
