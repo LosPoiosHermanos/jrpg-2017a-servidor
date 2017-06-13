@@ -18,11 +18,11 @@ public class Conector {
 
 	public void connect() {
 		try {
-			Servidor.log.append("Estableciendo conexión con la base de datos..." + System.lineSeparator());
+			Servidor.log.append("Estableciendo conexiÃ³n con la base de datos..." + System.lineSeparator());
 			connect = DriverManager.getConnection("jdbc:sqlite:" + url);
-			Servidor.log.append("Conexión con la base de datos establecida con éxito." + System.lineSeparator());
+			Servidor.log.append("ConexiÃ³n con la base de datos establecida con Ã©xito." + System.lineSeparator());
 		} catch (SQLException ex) {
-			Servidor.log.append("Fallo al intentar establecer la conexión con la base de datos. " + ex.getMessage()
+			Servidor.log.append("Fallo al intentar establecer la conexiï¿½n con la base de datos. " + ex.getMessage()
 					+ System.lineSeparator());
 		}
 	}
@@ -31,7 +31,7 @@ public class Conector {
 		try {
 			connect.close();
 		} catch (SQLException ex) {
-			Servidor.log.append("Error al intentar cerrar la conexión con la base de datos." + System.lineSeparator());
+			Servidor.log.append("Error al intentar cerrar la conexiÃ³n con la base de datos." + System.lineSeparator());
 			Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
@@ -87,7 +87,7 @@ public class Conector {
 			stRegistrarPersonaje.setInt(13, -1);
 			stRegistrarPersonaje.execute();
 
-			// Recupero la última key generada
+			// Recupero la ultima key generada
 			ResultSet rs = stRegistrarPersonaje.getGeneratedKeys();
 			if (rs != null && rs.next()) {
 
@@ -162,7 +162,7 @@ public class Conector {
 	public boolean loguearUsuario(PaqueteUsuario user) {
 		ResultSet result = null;
 		try {
-			// Busco usuario y contraseña
+			// Busco usuario y contraseï¿½a
 			PreparedStatement st = connect
 					.prepareStatement("SELECT * FROM registro WHERE usuario = ? AND password = ? ");
 			st.setString(1, user.getUsername());
@@ -171,16 +171,16 @@ public class Conector {
 
 			// Si existe inicio sesion
 			if (result.next()) {
-				Servidor.log.append("El usuario " + user.getUsername() + " ha iniciado sesión." + System.lineSeparator());
+				Servidor.log.append("El usuario " + user.getUsername() + " ha iniciado sesiï¿½n." + System.lineSeparator());
 				return true;
 			}
 
 			// Si no existe informo y devuelvo false
-			Servidor.log.append("El usuario " + user.getUsername() + " ha realizado un intento fallido de inicio de sesión." + System.lineSeparator());
+			Servidor.log.append("El usuario " + user.getUsername() + " ha realizado un intento fallido de inicio de sesiï¿½n." + System.lineSeparator());
 			return false;
 
 		} catch (SQLException e) {
-			Servidor.log.append("El usuario " + user.getUsername() + " fallo al iniciar sesión." + System.lineSeparator());
+			Servidor.log.append("El usuario " + user.getUsername() + " fallo al iniciar sesiï¿½n." + System.lineSeparator());
 			e.printStackTrace();
 			return false;
 		}
@@ -204,7 +204,7 @@ public class Conector {
 			
 			stActualizarPersonaje.executeUpdate();
 			
-			Servidor.log.append("El personaje " + paquetePersonaje.getNombre() + " se ha actualizado con éxito."  + System.lineSeparator());;
+			Servidor.log.append("El personaje " + paquetePersonaje.getNombre() + " se ha actualizado con ï¿½xito."  + System.lineSeparator());;
 		} catch (SQLException e) {
 			Servidor.log.append("Fallo al intentar actualizar el personaje " + paquetePersonaje.getNombre()  + System.lineSeparator());
 			e.printStackTrace();

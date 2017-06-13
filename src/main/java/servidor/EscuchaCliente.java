@@ -15,6 +15,7 @@ import mensajeria.PaqueteBatalla;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
 import mensajeria.PaqueteFinalizarBatalla;
+import mensajeria.PaqueteInventario;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
@@ -35,6 +36,7 @@ public class EscuchaCliente extends Thread {
 	
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
+	private PaqueteInventario paqueteInventario;
 
 	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) {
 		this.socket = socket;
@@ -224,7 +226,11 @@ public class EscuchaCliente extends Thread {
 					}
 					
 					break;
-				
+					///SABRI
+//				case Comando.INVENTARIO:
+//					paqueteInventario = (PaqueteInventario) gson.fromJson(cadenaLeida, PaqueteInventario.class);
+//					Servidor.log.append("Pesonaje Id: "+paqueteInventario.getIdPersonaje()+" quiere ver su inventario. ");
+//					break;
 				default:
 					break;
 				}
