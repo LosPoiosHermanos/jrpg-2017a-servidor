@@ -72,6 +72,8 @@ public class Conector {
 			PreparedStatement stRegistrarPersonaje = connect.prepareStatement(
 					"INSERT INTO personaje (idInventario, idMochila,casta,raza,fuerza,destreza,inteligencia,saludTope,energiaTope,nombre,experiencia,nivel,idAlianza) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
 					PreparedStatement.RETURN_GENERATED_KEYS);
+//			sabri
+//			stRegistrarPersonaje.setInt(1, paquetePersonaje.getIdInventario());
 			stRegistrarPersonaje.setInt(1, -1);
 			stRegistrarPersonaje.setInt(2, -1);
 			stRegistrarPersonaje.setString(3, paquetePersonaje.getCasta());
@@ -124,7 +126,7 @@ public class Conector {
 		}
 
 	}
-
+//	sabri
 	public boolean registrarInventarioMochila(int idInventarioMochila) {
 		try {
 			// Preparo la consulta para el registro el inventario en la base de
@@ -204,7 +206,7 @@ public class Conector {
 			
 			stActualizarPersonaje.executeUpdate();
 			
-			Servidor.log.append("El personaje " + paquetePersonaje.getNombre() + " se ha actualizado con �xito."  + System.lineSeparator());;
+			Servidor.log.append("El personaje " + paquetePersonaje.getNombre() + " se ha actualizado con éxito."  + System.lineSeparator());;
 		} catch (SQLException e) {
 			Servidor.log.append("Fallo al intentar actualizar el personaje " + paquetePersonaje.getNombre()  + System.lineSeparator());
 			e.printStackTrace();
