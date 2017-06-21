@@ -44,15 +44,6 @@ dependencies {
 
 // Tareas
 
-test {
-    SecurityManager manager = System.getSecurityManager();
-    if (manager == null) {
-        println("there is no security manager!");
-    }
-
-    jvmArgs "-Djava.security.manager=java.lang.SecurityManager"
-}
-
 checkstyle {
 	configFile = new File(rootDir, "src/test/resources/sun_checks.xml")
 	ignoreFailures = true
