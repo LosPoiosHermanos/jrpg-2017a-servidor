@@ -21,6 +21,8 @@ public class TestConector {
 		// Pasado este punto la conexi�n con la base de datos result� exitosa
 
 		Assert.assertEquals(1, 1);
+		
+		conector.close();
 	}
 
 	@Test
@@ -40,6 +42,8 @@ public class TestConector {
 		pu = conector.getUsuario("UserTest");
 
 		Assert.assertEquals("UserTest", pu.getUsername());
+		
+		conector.close();
 	}
 
 	@Test
@@ -72,6 +76,8 @@ public class TestConector {
 		pp = conector.getPersonaje(pu);
 
 		Assert.assertEquals("PjTest", pp.getNombre());
+		
+		conector.close();
 	}
 
 	@Test
@@ -91,6 +97,8 @@ public class TestConector {
 		boolean resultadoLogin = conector.loguearUsuario(pu);
 
 		Assert.assertEquals(true, resultadoLogin);
+		
+		conector.close();
 	}
 
 	@Test
@@ -108,6 +116,8 @@ public class TestConector {
 		boolean resultadoLogin = conector.loguearUsuario(pu);
 
 		Assert.assertEquals(false, resultadoLogin);
+		
+		conector.close();
 	}
 
 }
