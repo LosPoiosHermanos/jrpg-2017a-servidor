@@ -100,6 +100,7 @@ public class EscuchaCliente extends Thread {
 
 						paquetePersonaje = new PaquetePersonaje();
 						paquetePersonaje = Servidor.getConector().getPersonaje(paqueteUsuario);
+						
 						paquetePersonaje.setComando(Comando.INICIOSESION);
 						paquetePersonaje.setMensaje(Paquete.msjExito);
 						idPersonaje = paquetePersonaje.getId();

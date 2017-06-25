@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import dominio.Objeto;
 import mensajeria.PaquetePersonaje;
 import mensajeria.PaqueteUsuario;
 
@@ -144,7 +145,6 @@ public class Conector {
 			PreparedStatement stRegistrarMochila = connect.prepareStatement(
 					"INSERT INTO mochila(idMochila,item1,item2,item3,item4,item5,item6,item7,item8,item9,item10,item11,item12,item13,item14,item15,item16,item17,item18,item19,item20) VALUES(?,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1)");
 			stRegistrarMochila.setInt(1, idInventarioMochila);
-
 			// Registro inventario y mochila
 			stRegistrarInventario.execute();
 			stRegistrarMochila.execute();
@@ -170,7 +170,7 @@ public class Conector {
 	public boolean loguearUsuario(PaqueteUsuario user) {
 		ResultSet result = null;
 		try {
-			// Busco usuario y contrase�a
+			// Busco usuario y contrasenia
 			PreparedStatement st = connect
 					.prepareStatement("SELECT * FROM registro WHERE usuario = ? AND password = ? ");
 			st.setString(1, user.getUsername());
@@ -200,7 +200,6 @@ public class Conector {
 
 	public void actualizarPersonaje(PaquetePersonaje paquetePersonaje) {
 		try {
-			int i = 0;
 			PreparedStatement stActualizarPersonaje = connect.prepareStatement(
 					"UPDATE personaje SET fuerza=?, destreza=?, inteligencia=?, saludTope=?, energiaTope=?, experiencia=?, nivel=? "
 							+ "  WHERE idPersonaje=?");
@@ -216,13 +215,43 @@ public class Conector {
 
 			stActualizarPersonaje.executeUpdate();
 
-			
+			actualizarInventario(paquetePersonaje);
 
 			Servidor.log.append("El personaje " + paquetePersonaje.getNombre() + " se ha actualizado con éxito."
 					+ System.lineSeparator());
-			;
+
 		} catch (SQLException e) {
 			Servidor.log.append("Fallo al intentar actualizar el personaje " + paquetePersonaje.getNombre()
+					+ System.lineSeparator());
+			e.printStackTrace();
+		}
+
+	}
+	/**
+	 * Guardo en la base los elementos del inventario en la tabla mochila
+	 * Maxima cantidad de objetos limitada por columnas
+	 * @param paquetePersonaje
+	 */
+	public void actualizarInventario(PaquetePersonaje paquetePersonaje) {
+		try {
+
+			// Preparo la consulta para el registro la mochila en la base de datos
+			PreparedStatement stActualizarMochila = connect.prepareStatement(
+					"UPDATE mochila SET item1=?,item2=?,item3=?,item4=?,item5=?,item6=?,item7=?,item8=?,item9=?,item10=?,"
+							+"item11=?,item12=?,item13=?,item14=?,item15=?,item16=?,item17=?,item18=?,item19=?,item20=?"
+							+"  WHERE idMochila=?");
+			int[] inventario = paquetePersonaje.getInventario();
+			for (int j = 0; j < 20; j++) {
+				stActualizarMochila.setInt(j+1, inventario[j]);
+			}					
+			stActualizarMochila.setInt(21, paquetePersonaje.getId());
+			stActualizarMochila.execute();
+
+			Servidor.log.append("El inventario del personaje" + paquetePersonaje.getNombre() + " se ha actualizado con éxito."
+					+ System.lineSeparator());
+			
+		} catch (SQLException e) {
+			Servidor.log.append("Fallo al intentar actualizar el inventario del personaje" + paquetePersonaje.getNombre()
 					+ System.lineSeparator());
 			e.printStackTrace();
 		}
@@ -245,7 +274,8 @@ public class Conector {
 					.prepareStatement("SELECT * FROM personaje WHERE idPersonaje = ?");
 			stSeleccionarPersonaje.setInt(1, idPersonaje);
 			result = stSeleccionarPersonaje.executeQuery();
-
+			
+						
 			// Obtengo los atributos del personaje
 			PaquetePersonaje personaje = new PaquetePersonaje();
 			personaje.setId(idPersonaje);
@@ -259,6 +289,17 @@ public class Conector {
 			personaje.setNombre(result.getString("nombre"));
 			personaje.setExperiencia(result.getInt("experiencia"));
 			personaje.setNivel(result.getInt("nivel"));
+			
+			// sabri - Selecciono los datos del inventario 
+			PreparedStatement stSeleccionarInventario = connect
+					.prepareStatement("SELECT * FROM mochila WHERE idMochila = ?");
+			stSeleccionarInventario.setInt(1, idPersonaje);
+			result = stSeleccionarInventario.executeQuery();
+			
+			// sabri - Obtengo los atributos
+			for (int i = 0; i < personaje.getInventario().length; i++) {
+				personaje.setinventario(i, result.getInt("item"+(i+1)));
+			}
 
 			// Devuelvo el paquete personaje con sus datos
 			return personaje;
@@ -299,4 +340,5 @@ public class Conector {
 
 		return new PaqueteUsuario();
 	}
+	
 }
