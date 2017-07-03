@@ -12,11 +12,14 @@ import mensajeria.Comando;
 import mensajeria.Paquete;
 import mensajeria.PaqueteAtacar;
 import mensajeria.PaqueteBatalla;
+import mensajeria.PaqueteComercio;
 import mensajeria.PaqueteDeMovimientos;
 import mensajeria.PaqueteDePersonajes;
 import mensajeria.PaqueteFinalizarBatalla;
+import mensajeria.PaqueteFinalizarComercio;
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
+import mensajeria.PaqueteTrueque;
 import mensajeria.PaqueteUsuario;
 
 public class EscuchaCliente extends Thread {
@@ -32,9 +35,13 @@ public class EscuchaCliente extends Thread {
 	private PaqueteBatalla paqueteBatalla;
 	private PaqueteAtacar paqueteAtacar;
 	private PaqueteFinalizarBatalla paqueteFinalizarBatalla;
+	private PaqueteTrueque paqueteTrueque;
+	private PaqueteFinalizarComercio paqueteFinalizarComercio;
 
 	private PaqueteDeMovimientos paqueteDeMovimiento;
 	private PaqueteDePersonajes paqueteDePersonajes;
+	
+	private PaqueteComercio paqueteComercio;
 
 	public EscuchaCliente(String ip, Socket socket, ObjectInputStream entrada, ObjectOutputStream salida) {
 		this.socket = socket;
@@ -238,6 +245,62 @@ public class EscuchaCliente extends Thread {
 
 					for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
 						conectado.getSalida().writeObject(gson.toJson(paquetePersonaje));
+					}
+
+					break;
+				case Comando.COMERCIO:
+
+					// Le reenvio al id del personaje  que quieren comerciar
+					paqueteComercio = (PaqueteComercio) gson.fromJson(cadenaLeida, PaqueteComercio.class);
+					Servidor.log.append(paqueteComercio.getId() + " quiere comerciar con " + paqueteComercio.getIdEnemigo()
+							+ System.lineSeparator());
+
+					// seteo estado de comercio
+					Servidor.getPersonajesConectados().get(paqueteComercio.getId()).setEstado(Estado.estadoComercio);
+					Servidor.getPersonajesConectados().get(paqueteComercio.getIdEnemigo())
+							.setEstado(Estado.estadoComercio);
+					paqueteComercio.setMiTurno(true);
+					salida.writeObject(gson.toJson(paqueteComercio));
+					for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+						if (conectado.getIdPersonaje() == paqueteComercio.getIdEnemigo()) {
+							int aux = paqueteComercio.getId();
+							paqueteComercio.setId(paqueteComercio.getIdEnemigo());
+							paqueteComercio.setIdEnemigo(aux);
+							paqueteComercio.setMiTurno(false);
+							conectado.getSalida().writeObject(gson.toJson(paqueteComercio));
+							break;
+						}
+					}
+
+					synchronized (Servidor.atencionConexiones) {
+						Servidor.atencionConexiones.notify();
+					}
+
+					break;
+				case Comando.TRUEQUE:
+					paqueteTrueque = (PaqueteTrueque) gson.fromJson(cadenaLeida, PaqueteTrueque.class);
+					for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+						if (conectado.getIdPersonaje() == paqueteTrueque.getIdEnemigo()) {
+							conectado.getSalida().writeObject(gson.toJson(paqueteTrueque));
+						}
+					}
+					break;
+
+				case Comando.FINALIZARCOMERCIO:
+					paqueteFinalizarComercio = (PaqueteFinalizarComercio) gson.fromJson(cadenaLeida,
+							PaqueteFinalizarComercio.class);
+					Servidor.getPersonajesConectados().get(paqueteFinalizarComercio.getId())
+							.setEstado(Estado.estadoJuego);
+					Servidor.getPersonajesConectados().get(paqueteFinalizarComercio.getIdEnemigo())
+							.setEstado(Estado.estadoJuego);
+					for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+						if (conectado.getIdPersonaje() == paqueteFinalizarComercio.getIdEnemigo()) {
+							conectado.getSalida().writeObject(gson.toJson(paqueteFinalizarComercio));
+						}
+					}
+
+					synchronized (Servidor.atencionConexiones) {
+						Servidor.atencionConexiones.notify();
 					}
 
 					break;

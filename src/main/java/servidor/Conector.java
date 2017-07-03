@@ -131,7 +131,7 @@ public class Conector {
 
 	}
 
-	// sabri
+
 	public boolean registrarInventarioMochila(int idInventarioMochila) {
 		try {
 			// Preparo la consulta para el registro el inventario en la base de
@@ -290,13 +290,13 @@ public class Conector {
 			personaje.setExperiencia(result.getInt("experiencia"));
 			personaje.setNivel(result.getInt("nivel"));
 			
-			// sabri - Selecciono los datos del inventario 
+			// Selecciono los datos del inventario 
 			PreparedStatement stSeleccionarInventario = connect
 					.prepareStatement("SELECT * FROM mochila WHERE idMochila = ?");
 			stSeleccionarInventario.setInt(1, idPersonaje);
 			result = stSeleccionarInventario.executeQuery();
 			
-			// sabri - Obtengo los atributos
+			// Obtengo los atributos
 			for (int i = 0; i < personaje.getInventario().length; i++) {
 				personaje.setinventario(i, result.getInt("item"+(i+1)));
 			}
