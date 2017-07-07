@@ -1,0 +1,43 @@
+package comandos;
+
+import java.io.IOException;
+import mensajeria.PaqueteChat;
+import servidor.EscuchaCliente;
+import servidor.Servidor;
+//REVISADO
+public class ComandoEnviarChat extends NextServidor {
+	private NextServidor nextServidor;
+
+	public void setNextServidor(NextServidor proximo) {
+		nextServidor = proximo;
+	}
+
+	@Override
+	public void solicitudDelComando(int comando) {
+		if (comando == Comando.ENVIARCHAT) {
+
+			escuchaCliente.setPaqueteChat((PaqueteChat) gson.fromJson(cadenaLeida, PaqueteChat.class));
+
+			for (EscuchaCliente conectado : Servidor.getClientesConectados()) {
+				try {
+					conectado.getSalida().writeObject(gson.toJson(escuchaCliente.getPaqueteChat()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		} else {
+			try {
+				nextServidor.solicitudDelComando(comando);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public NextServidor getNextServidor() {
+		return nextServidor;
+	}
+
+}

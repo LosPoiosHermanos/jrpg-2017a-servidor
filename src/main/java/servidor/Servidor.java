@@ -22,7 +22,7 @@ import javax.swing.JTextArea;
 
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
-
+//REVISADO
 public class Servidor extends Thread {
 
 	private static ArrayList<EscuchaCliente> clientesConectados = new ArrayList<>();
@@ -89,6 +89,8 @@ public class Servidor extends Thread {
 		botonDetener.setText("Detener");
 		botonDetener.setBounds(360, ALTO - 70, 100, 30);
 		botonDetener.addActionListener(new ActionListener() {
+			//siso
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					server.stop();
@@ -113,6 +115,8 @@ public class Servidor extends Thread {
 
 		ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		ventana.addWindowListener(new WindowAdapter() {
+			//siso
+			@SuppressWarnings("deprecation")
 			public void windowClosing(WindowEvent evt) {
 				if (serverSocket != null) {
 					try {
@@ -165,7 +169,7 @@ public class Servidor extends Thread {
 				clientesConectados.add(atencion);
 			}
 		} catch (Exception e) {
-			log.append("Fallo la conexión." + System.lineSeparator());
+			log.append("Fallo la conexion." + System.lineSeparator());
 			e.printStackTrace();
 		}
 	}
