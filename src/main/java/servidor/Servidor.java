@@ -17,12 +17,14 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import mensajeria.PaqueteMovimiento;
 import mensajeria.PaquetePersonaje;
-//REVISADO
+
 public class Servidor extends Thread {
 
 	private static ArrayList<EscuchaCliente> clientesConectados = new ArrayList<>();
@@ -34,7 +36,7 @@ public class Servidor extends Thread {
 
 	private static ServerSocket serverSocket;
 	private static Conector conexionDB;
-	private final int PUERTO = 9999;
+	private static int PUERTO;
 
 	private final static int ANCHO = 700;
 	private final static int ALTO = 640;
@@ -63,6 +65,15 @@ public class Servidor extends Thread {
 		titulo.setBounds(10, 0, 200, 30);
 		ventana.add(titulo);
 
+		JLabel lblpuerto = new JLabel("Puerto:");
+		lblpuerto.setFont(new Font("Courier New", Font.BOLD, 16));
+		lblpuerto.setBounds(510, 0, 200, 30);
+		ventana.add(lblpuerto);
+		
+		JTextField puerto = new JTextField();
+		puerto.setBounds(585, 6, 100, 20);
+		ventana.add(puerto);
+		
 		log = new JTextArea();
 		log.setEditable(false);
 		log.setFont(new Font("Times New Roman", Font.PLAIN, 13));
@@ -77,10 +88,16 @@ public class Servidor extends Thread {
 		botonIniciar.setBounds(220, ALTO - 70, 100, 30);
 		botonIniciar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				server = new Thread(new Servidor());
-				server.start();
-				botonIniciar.setEnabled(false);
-				botonDetener.setEnabled(true);
+				if(!puerto.getText().isEmpty()){
+					server = new Thread(new Servidor());
+					server.start();
+					botonIniciar.setEnabled(false);
+					botonDetener.setEnabled(true);
+					PUERTO = Integer.parseInt(puerto.getText());
+					puerto.setEditable(false);
+				} else{
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese un puerto para iniciar el servidor");
+				}
 			}
 		});
 
@@ -89,8 +106,6 @@ public class Servidor extends Thread {
 		botonDetener.setText("Detener");
 		botonDetener.setBounds(360, ALTO - 70, 100, 30);
 		botonDetener.addActionListener(new ActionListener() {
-			//siso
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
 				try {
 					server.stop();
@@ -115,8 +130,6 @@ public class Servidor extends Thread {
 
 		ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		ventana.addWindowListener(new WindowAdapter() {
-			//siso
-			@SuppressWarnings("deprecation")
 			public void windowClosing(WindowEvent evt) {
 				if (serverSocket != null) {
 					try {
@@ -169,7 +182,7 @@ public class Servidor extends Thread {
 				clientesConectados.add(atencion);
 			}
 		} catch (Exception e) {
-			log.append("Fallo la conexion." + System.lineSeparator());
+			log.append("Fallo la conexión." + System.lineSeparator());
 			e.printStackTrace();
 		}
 	}

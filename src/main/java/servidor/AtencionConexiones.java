@@ -1,11 +1,19 @@
 package servidor;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+
 import com.google.gson.Gson;
 
-import comandos.Comando;
+import cliente.Cliente;
 import estados.Estado;
+import mensajeria.Comando;
 import mensajeria.PaqueteDePersonajes;
-//REVISADO
+
 public class AtencionConexiones extends Thread {
 
 	private final Gson gson = new Gson();
@@ -32,9 +40,8 @@ public class AtencionConexiones extends Thread {
 							PaqueteDePersonajes pdp = (PaqueteDePersonajes) new PaqueteDePersonajes(
 									Servidor.getPersonajesConectados()).clone();
 							pdp.setComando(Comando.CONEXION);
-							synchronized (conectado) {
 							conectado.getSalida().writeObject(gson.toJson(pdp));
-							}
+
 						}
 
 					}
@@ -42,6 +49,7 @@ public class AtencionConexiones extends Thread {
 				}
 
 			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Falló al intentar atender a clientes.");
 				e.printStackTrace();
 			}
 		}

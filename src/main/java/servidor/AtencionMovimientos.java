@@ -1,11 +1,13 @@
 package servidor;
 
+import javax.swing.JOptionPane;
+
 import com.google.gson.Gson;
 
-import comandos.Comando;
 import estados.Estado;
+import mensajeria.Comando;
 import mensajeria.PaqueteDeMovimientos;
-//REVISADO
+
 public class AtencionMovimientos extends Thread {
 
 	private final Gson gson = new Gson();
@@ -33,13 +35,15 @@ public class AtencionMovimientos extends Thread {
 							PaqueteDeMovimientos pdp = (PaqueteDeMovimientos) new PaqueteDeMovimientos(
 									Servidor.getUbicacionPersonajes()).clone();
 							pdp.setComando(Comando.MOVIMIENTO);
-							synchronized (conectado) {
-								conectado.getSalida().writeObject(gson.toJson(pdp));
-							}
+							conectado.getSalida().writeObject(gson.toJson(pdp));
+
 						}
 					}
+
 				}
+
 			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Falló al intentar atender movimientos.");
 				e.printStackTrace();
 			}
 		}
